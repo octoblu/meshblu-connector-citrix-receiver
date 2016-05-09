@@ -2,6 +2,7 @@
 debug           = require('debug')('meshblu-connector-citrix-receiver:index')
 schemas         = require './legacySchemas.coffee'
 exec            = require('child_process').exec;
+_               = require 'lodash'
 
 class CitrixReceiver extends EventEmitter
   constructor: ->
@@ -13,6 +14,8 @@ class CitrixReceiver extends EventEmitter
       @DEFAULT_RECEIVER_PATH = 'C:\\Program Files (x86)\\Citrix\\SelfServicePlugin\\SelfService.exe'
     else
       @DEFAULT_RECEIVER_PATH = '/Applications/Citrix\\ Receiver.app'
+
+    schemas.optionsSchema.properties.receiverPath.default = @DEFAULT_RECEIVER_PATH
 
   isOnline: (callback) =>
     callback null, running: true
@@ -30,7 +33,7 @@ class CitrixReceiver extends EventEmitter
     payload = message.payload || {}
     command = payload.command;
 
-    if command === 'start-receiver' || command === 'open-application'
+    if command == 'start-receiver' || command == 'open-application'
       if Array.isArray(payload.application)
         payload.application.forEach (app) =>
           debug 'Launching: ', app

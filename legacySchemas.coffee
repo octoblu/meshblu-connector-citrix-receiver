@@ -18,10 +18,11 @@ MESSAGE_SCHEMA =
       required: false
 OPTIONS_SCHEMA =
   type: 'object'
-  properties: receiverPath:
-    type: 'string'
-    required: true
-    default: DEFAULT_RECEIVER_PATH
+  properties:
+    receiverPath:
+      type: 'string'
+      required: true
+      default: ""
 
 module.exports = {
   messageSchema: MESSAGE_SCHEMA
