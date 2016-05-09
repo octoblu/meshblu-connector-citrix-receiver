@@ -1,0 +1,62 @@
+{
+  "schemas": {
+    "version": "1.0.0",
+    "form": {
+      "message": {
+        "url": null
+      },
+      "configure": {
+        "url": null
+      }
+    },
+    "configure": {
+      "url": null,
+      "options": {
+        "type" : "object",
+        "properties" : {
+          "type" : "object",
+          "properties" : {
+            "example" : {
+              "type" : "string"
+            }
+          }
+        }
+      }
+    },
+    "message": {
+      "url": null,
+      "$schema": "http://json-schema.org/draft-04/schema#",
+      "definitions": {
+        "example-message-01": {
+          "type": "object",
+          "properties": {
+            "example-opt": {
+              "type": "string"
+            },
+            "another-example-opt":{
+              "type": "string"
+            }
+          },
+          "required": ["example-opt", "another-example-opt"]
+        },
+        "example-message-02": {
+          "type": "object",
+          "properties": {
+            "some-opt": {
+              "type": "string"
+            },
+            "another-some-opt":{
+              "type": "string"
+            }
+          },
+          "required": ["some-opt", "another-some-opt"]
+        }
+      },
+      "type": "object",
+      "properties": {
+        "example-message-01": { "$ref": "#/definitions/example-message-01" },
+        "example-message-02": { "$ref": "#/definitions/example-message-02" }
+      }
+    }
+  }
+}
