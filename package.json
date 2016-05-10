@@ -1,6 +1,6 @@
 {
   "name": "meshblu-connector-citrix-receiver",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Meshblu Connector ",
   "homepage": "https://github.com/octoblu/citrix-receiver",
   "bugs": "https://github.com/octoblu/citrix-receiver/issues",
@@ -31,7 +31,7 @@
     "debug": "^2.2.0",
     "eventemitter2": "^1.0.0",
     "lodash": "^4.12.0",
-    "meshblu-connector-runner": "^3.0.2"
+    "meshblu-connector-runner": "^4.0.2"
   },
   "meshbluConnector": {
     "githubSlug": "octoblu/meshblu-connector-citrix-receiver",
