@@ -14,8 +14,6 @@ class CitrixReceiver extends EventEmitter
     else
       @DEFAULT_RECEIVER_PATH = '/Applications/Citrix\\ Receiver.app'
 
-    schemas.optionsSchema.properties.receiverPath.default = @DEFAULT_RECEIVER_PATH
-
   onMessage: (message) =>
     return unless message?
 
