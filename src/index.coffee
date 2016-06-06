@@ -1,6 +1,5 @@
 {EventEmitter}  = require 'events'
 debug           = require('debug')('meshblu-connector-citrix-receiver:index')
-schemas         = require './legacySchemas.coffee'
 exec            = require('child_process').exec;
 _               = require 'lodash'
 
@@ -17,21 +16,11 @@ class CitrixReceiver extends EventEmitter
 
     schemas.optionsSchema.properties.receiverPath.default = @DEFAULT_RECEIVER_PATH
 
-  isOnline: (callback) =>
-    callback null, running: true
-
-  close: (callback) =>
-    debug 'on close'
-    callback()
-
   onMessage: (message) =>
     return unless message?
-    { topic, devices, fromUuid } = message
-    return if '*' in devices
-    return if fromUuid == @uuid
-    debug 'onMessage', { topic }
-    payload = message.payload || {}
-    command = payload.command;
+
+    { payload } = message || {}
+    { command } = payload
 
     if command == 'start-receiver' || command == 'open-application'
       if Array.isArray(payload.application)
@@ -77,6 +66,6 @@ class CitrixReceiver extends EventEmitter
   start: (device) =>
     { @uuid } = device
     debug 'started', @uuid
-    @emit 'update', schemas
+    @setOptions device.options
 
 module.exports = CitrixReceiver

@@ -3,59 +3,54 @@
     "version": "1.0.0",
     "form": {
       "message": {
-        "url": null
-      },
-      "configure": {
-        "url": null
+        "example-01": {
+          "angular": {
+            "schema": ["*"]
+          }
+        }
       }
     },
     "configure": {
-      "url": null,
-      "options": {
-        "type" : "object",
-        "properties" : {
-          "type" : "object",
-          "properties" : {
-            "example" : {
-              "type" : "string"
+      "my-default-config": {
+        "type": "object",
+        "properties": {
+          "options": {
+            "type": "object",
+            "properties": {
+              "receiverPath": {
+                "type": "string",
+                "required": true,
+                "default": ""
+              }
             }
           }
         }
       }
     },
     "message": {
-      "url": null,
-      "$schema": "http://json-schema.org/draft-04/schema#",
-      "definitions": {
-        "example-message-01": {
-          "type": "object",
-          "properties": {
-            "example-opt": {
+      "example-message-01": {
+        "type": "object",
+        "properties": {
+          "command": {
+            "type": "string",
+            "required": true,
+            "enum": [
+              "open-application",
+              "disconnectapps",
+              "poll",
+              "logoff",
+              "reconnectapps"
+            ],
+            "default": "open-application"
+          },
+          "application": {
+            "type": "array",
+            "items": {
               "type": "string"
             },
-            "another-example-opt":{
-              "type": "string"
-            }
-          },
-          "required": ["example-opt", "another-example-opt"]
-        },
-        "example-message-02": {
-          "type": "object",
-          "properties": {
-            "some-opt": {
-              "type": "string"
-            },
-            "another-some-opt":{
-              "type": "string"
-            }
-          },
-          "required": ["some-opt", "another-some-opt"]
+            "required": false
+          }
         }
-      },
-      "type": "object",
-      "properties": {
-        "example-message-01": { "$ref": "#/definitions/example-message-01" },
-        "example-message-02": { "$ref": "#/definitions/example-message-02" }
       }
     }
   }
