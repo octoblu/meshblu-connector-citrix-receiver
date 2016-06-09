@@ -1,6 +1,6 @@
 {
   "name": "meshblu-connector-citrix-receiver",
-  "version": "1.0.4",
+  "version": "3.0.0",
   "description": "Meshblu Connector ",
   "homepage": "https://github.com/octoblu/citrix-receiver",
   "bugs": "https://github.com/octoblu/citrix-receiver/issues",
@@ -28,21 +28,23 @@
   },
   "dependencies": {
     "coffee-script": "^1.10.0",
+    "cross-spawn": "^4.0.0",
     "debug": "^2.2.0",
     "lodash": "^4.12.0",
-    "meshblu-connector-runner": "^6.0.0"
+    "meshblu-connector-runner": "^6.0.0",
+    "meshblu-config": "^4.0.0"
   },
   "meshbluConnector": {
     "githubSlug": "octoblu/meshblu-connector-citrix-receiver",
-    "schemasUrl": "https://raw.githubusercontent.com/octoblu/meshblu-connector-citrix-receiver/v1.0.1/schemas.json"
+    "schemasUrl": "https://raw.githubusercontent.com/octoblu/meshblu-connector-citrix-receiver/v2.0.0/schemas.json"
   },
   "platformDependencies": {
     "darwin": [],
     "win32": [],
     "win64": [],
     "linux": [],
-    "android": [],
-    "ios": []
+    "android": null,
+    "ios": null
   },
   "license": "MIT",
   "keywords": [

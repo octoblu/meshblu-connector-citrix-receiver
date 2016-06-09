@@ -1,69 +1,74 @@
-{EventEmitter}  = require 'events'
-debug           = require('debug')('meshblu-connector-citrix-receiver:index')
-exec            = require('child_process').exec;
 _               = require 'lodash'
+{EventEmitter}  = require 'events'
+{ exec }        = require 'child_process'
+spawn           = require 'cross-spawn'
+path            = require 'path'
+debug           = require('debug')('meshblu-connector-citrix-receiver:index')
+
+WINDOWS_RECEIVER_PATH = path.join 'C', 'Program Files (x86)', 'Citrix', 'SelfServicePlugin', 'SelfService.exe'
+macPath = path.join 'Applications', 'TextEdit.app'
+MAC_RECEIVER_PATH = "/#{macPath}"
 
 class CitrixReceiver extends EventEmitter
   constructor: ->
     debug 'CitrixReceiver constructed'
-    @options = {}
     @isWindows = process.platform == 'win32' || process.platform == 'win64'
-    @DEFAULT_RECEIVER_PATH = undefined
-    if @isWindows
-      @DEFAULT_RECEIVER_PATH = 'C:\\Program Files (x86)\\Citrix\\SelfServicePlugin\\SelfService.exe'
-    else
-      @DEFAULT_RECEIVER_PATH = '/Applications/Citrix\\ Receiver.app'
+    @DEFAULT_RECEIVER_PATH = WINDOWS_RECEIVER_PATH if @isWindows
+    @DEFAULT_RECEIVER_PATH = MAC_RECEIVER_PATH unless @isWindows
 
-  onMessage: (message) =>
-    return unless message?
+  onMessage: (message={}) =>
+    { command, application } = message.payload ? {}
+    return @openApplication { command, application } if @isOpenApplicationCommand({ command })
+    @runCommand { command }
 
-    { payload } = message || {}
-    { command } = payload
+  emitMessage: (topic, payload) =>
+    @emit 'message', {
+      devices: ['*'],
+      topic,
+      payload,
+    }
 
-    if command == 'start-receiver' || command == 'open-application'
-      if Array.isArray(payload.application)
-        payload.application.forEach (app) =>
-          debug 'Launching: ', app
-          @openApplication(app)
-      else
-        debug 'Launching: ', payload.application
-        @openApplication payload.application
+  runCommand: ({ command }) =>
+    return @emitMessage 'error', { error: "#{command} is only available on windows" } unless @isWindows
+    @execute(["-#{command}"])
 
-    @runCmd(command);
+  isOpenApplicationCommand: ({ command }) =>
+    return true if command == 'start-receiver'
+    return true if command == 'open-application'
+    return false
 
-  runCmd: (cmd) =>
-    if !@isWindows
-      @emit 'message', {devices: '*', topic: 'error', payload: {error: cmd + ' is only available for Windows'}}
+  execute: (options=[]) =>
+    debug "spawn: #{@receiverPath} #{options.join(' ')}"
+    child = spawn @receiverPath, options, { env: process.env }
 
-    command = '"' + @options.receiverPath + '"'
-    command += ' -' + cmd
-    debug 'executing command', command
-    exec command
+    child.on 'error', (error) =>
+      debug 'error', error
+      @emitMessage 'error', { error }
 
-  openApplication: (application) =>
-    fullCommand = ''
-    command = @options.receiverPath
-    if @isWindows
-      fullCommand = '"' + command + '"'
-      if application
-        fullCommand += ' -launch -name "' + application + '"'
-    else
-      fullCommand = 'open ' + command
+    child.on 'close', (code) =>
+      return unless code
+      @emitMessage 'error', { error: { 'exit-code': code } }
 
-    debug 'fullCommand to exec', fullCommand
-    exec fullCommand
+  openApplication: ({ command, application }) =>
+    return @openOnMac() unless @isWindows
+    return @execute() unless application
+    options = [
+      '-launch',
+      '-name',
+      application
+    ]
+    @execute options
 
-  onConfig: (config) =>
-    return unless config?
-    debug 'on config', @uuid
-    @setOptions config.options
+  openOnMac: =>
+    openCommand = "open \"#{@receiverPath}\""
+    debug "open on mac", openCommand
+    exec openCommand, (error) =>
+      @emitMessage 'error', { error } if error?
 
-  setOptions: (options) =>
-    @options = _.extend { receiverPath: @DEFAULT_RECEIVER_PATH }, options
+  onConfig: (device={}) =>
+    @receiverPath = device.options?.receiverPath ? @DEFAULT_RECEIVER_PATH
 
   start: (device) =>
-    { @uuid } = device
-    debug 'started', @uuid
-    @setOptions device.options
+    @onConfig device
 
 module.exports = CitrixReceiver
