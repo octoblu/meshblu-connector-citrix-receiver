@@ -1,0 +1,17 @@
+title: "Default Configuration"
+type: "object"
+properties:
+  options:
+    title: "Options"
+    type: "object"
+    properties:
+      receiverPath:
+        title: "Custom Receiver Path"
+        type: "string"
+        default: ""
+    required: [
+      "receiverPath"
+    ]
+required: [
+  "options"
+]

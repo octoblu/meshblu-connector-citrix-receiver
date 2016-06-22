@@ -1,0 +1,12 @@
+title: 'Open Application (Windows Only)'
+type: 'object'
+properties:
+  data:
+    type: 'object'
+    properties:
+      application:
+        title: 'Application Name'
+        type: 'string'
+    required: [
+      'application'
+    ]

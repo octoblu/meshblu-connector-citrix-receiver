@@ -1,0 +1,17 @@
+title: 'Open Application'
+type: 'object'
+properties:
+  data:
+    type: 'object'
+    properties:
+      exitCode:
+        type: 'integer'
+      stderr:
+        type: 'string'
+      stdout:
+        type: 'string'
+    required: [
+      'exitCode'
+      'stderr'
+      'stdout'
+    ]

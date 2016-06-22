@@ -1,74 +1,44 @@
-_               = require 'lodash'
 {EventEmitter}  = require 'events'
-{ exec }        = require 'child_process'
-spawn           = require 'cross-spawn'
-path            = require 'path'
 debug           = require('debug')('meshblu-connector-citrix-receiver:index')
+ReceiverManager = require './receiver-manager'
 
-WINDOWS_RECEIVER_PATH = path.join 'C', 'Program Files (x86)', 'Citrix', 'SelfServicePlugin', 'SelfService.exe'
-macPath = path.join 'Applications', 'TextEdit.app'
-MAC_RECEIVER_PATH = "/#{macPath}"
-
-class CitrixReceiver extends EventEmitter
+class Connector extends EventEmitter
   constructor: ->
-    debug 'CitrixReceiver constructed'
-    @isWindows = process.platform == 'win32' || process.platform == 'win64'
-    @DEFAULT_RECEIVER_PATH = WINDOWS_RECEIVER_PATH if @isWindows
-    @DEFAULT_RECEIVER_PATH = MAC_RECEIVER_PATH unless @isWindows
+    @receiver = new ReceiverManager
 
-  onMessage: (message={}) =>
-    { command, application } = message.payload ? {}
-    return @openApplication { command, application } if @isOpenApplicationCommand({ command })
-    @runCommand { command }
+  isOnline: (callback) =>
+    callback null, running: true
 
-  emitMessage: (topic, payload) =>
-    @emit 'message', {
-      devices: ['*'],
-      topic,
-      payload,
-    }
+  close: (callback) =>
+    debug 'on close'
+    callback()
 
-  runCommand: ({ command }) =>
-    return @emitMessage 'error', { error: "#{command} is only available on windows" } unless @isWindows
-    @execute(["-#{command}"])
+  disconnectApps: (callback) =>
+    @receiver.disconnectApps callback
 
-  isOpenApplicationCommand: ({ command }) =>
-    return true if command == 'start-receiver'
-    return true if command == 'open-application'
-    return false
+  logoff: (callback) =>
+    @receiver.logoff callback
 
-  execute: (options=[]) =>
-    debug "spawn: #{@receiverPath} #{options.join(' ')}"
-    child = spawn @receiverPath, options, { env: process.env }
+  openApplication: ({application}, callback) =>
+    @receiver.openApplication {application}, callback
 
-    child.on 'error', (error) =>
-      debug 'error', error
-      @emitMessage 'error', { error }
+  onConfig: (device={}, callback=->) =>
+    { @options } = device
+    debug 'on config', @options
+    { receiverPath } = @options ? {}
+    @receiver.connect { receiverPath }, callback
 
-    child.on 'close', (code) =>
-      return unless code
-      @emitMessage 'error', { error: { 'exit-code': code } }
+  poll: (callback) =>
+    @receiver.poll callback
 
-  openApplication: ({ command, application }) =>
-    return @openOnMac() unless @isWindows
-    return @execute() unless application
-    options = [
-      '-launch',
-      '-name',
-      application
-    ]
-    @execute options
+  reconnectApps: (callback) =>
+    @receiver.reconnectApps callback
 
-  openOnMac: =>
-    openCommand = "open \"#{@receiverPath}\""
-    debug "open on mac", openCommand
-    exec openCommand, (error) =>
-      @emitMessage 'error', { error } if error?
+  start: (device, callback) =>
+    debug 'started'
+    @onConfig device, callback
 
-  onConfig: (device={}) =>
-    @receiverPath = device.options?.receiverPath ? @DEFAULT_RECEIVER_PATH
+  startReceiver: (callback) =>
+    @receiver.startReceiver callback
 
-  start: (device) =>
-    @onConfig device
-
-module.exports = CitrixReceiver
+module.exports = Connector
