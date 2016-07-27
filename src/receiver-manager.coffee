@@ -1,8 +1,9 @@
 _               = require 'lodash'
 spawn           = require 'cross-spawn'
 path            = require 'path'
+debug           = require('debug')('meshblu-connector-citrix-receiver:receiver-manager')
 
-WINDOWS_RECEIVER_PATH = path.join 'C', 'Program Files (x86)', 'Citrix', 'SelfServicePlugin', 'SelfService.exe'
+WINDOWS_RECEIVER_PATH = path.join 'C', 'Program Files (x86)', 'Citrix', 'ICA Client', 'SelfServicePlugin', 'SelfService.exe'
 MAC_RECEIVER_PATH = '/Applications/Citrix Receiver.app'
 
 class ReceiverManager
@@ -27,6 +28,7 @@ class ReceiverManager
   _execute: ({args}, callback) =>
     callback = _.once callback
     {command, args} = @_getOSCommand {args}
+    debug 'About to spawn:', {command, args}
     proc = @spawn command, args
 
     stdout = ''
