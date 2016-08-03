@@ -3,7 +3,12 @@ ReceiverManager = require '../src/receiver-manager'
 
 describe 'ReceiverManager', ->
   beforeEach (done) ->
-    @sut = new ReceiverManager
+    logger =
+      info: =>
+      debug: =>
+      warn: =>
+
+    @sut = new ReceiverManager {logger}
     @sut.IS_WINDOWS = true
     @proc = new EventEmitter
     @proc.stdout = new EventEmitter

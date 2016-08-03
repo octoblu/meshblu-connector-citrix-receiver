@@ -1,13 +1,13 @@
 _               = require 'lodash'
 spawn           = require 'cross-spawn'
 path            = require 'path'
-debug           = require('debug')('meshblu-connector-citrix-receiver:receiver-manager')
 
 WINDOWS_RECEIVER_PATH = path.join 'C', 'Program Files (x86)', 'Citrix', 'ICA Client', 'SelfServicePlugin', 'SelfService.exe'
 MAC_RECEIVER_PATH = '/Applications/Citrix Receiver.app'
 
 class ReceiverManager
-  constructor: ->
+  constructor: ({ @logger })->
+    throw 'ReceiverManager requires logger' unless @logger?
     # hook for testing
     @spawn = spawn
     @IS_WINDOWS = process.platform == 'win32' || process.platform == 'win64'
@@ -28,13 +28,15 @@ class ReceiverManager
   _execute: ({args}, callback) =>
     callback = _.once callback
     {command, args} = @_getOSCommand {args}
-    debug 'About to spawn:', {command, args}
+    @logger.info {command, args}, "spawn sub-shell"
     proc = @spawn command, args
 
     stdout = ''
     stderr = ''
 
-    proc.on 'error', callback
+    proc.on 'error', (error) =>
+      @logger.error error, 'spawn error'
+      callback error
 
     proc.stdout.on 'data', (data) =>
       stdout += data.toString()
@@ -43,6 +45,7 @@ class ReceiverManager
       stderr += data.toString()
 
     proc.on 'close', (exitCode) =>
+      @logger.debug {exitCode, stdout, stderr}, "spawn on close"
       callback null, {exitCode, stdout, stderr}
 
   disconnectApps: (callback) =>

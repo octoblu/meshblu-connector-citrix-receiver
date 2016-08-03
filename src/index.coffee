@@ -3,8 +3,9 @@ debug           = require('debug')('meshblu-connector-citrix-receiver:index')
 ReceiverManager = require './receiver-manager'
 
 class Connector extends EventEmitter
-  constructor: ->
-    @receiver = new ReceiverManager
+  constructor: ({@logger})->
+    throw 'Connector requires logger' unless @logger?
+    @receiver = new ReceiverManager {@logger}
 
   isOnline: (callback) =>
     callback null, running: true

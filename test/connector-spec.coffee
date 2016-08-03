@@ -2,7 +2,12 @@ Connector = require '../'
 
 describe 'Connector', ->
   beforeEach (done) ->
-    @sut = new Connector
+    logger =
+      info: =>
+      debug: =>
+      warn: =>
+
+    @sut = new Connector {logger}
     {@receiver} = @sut
     @receiver.connect = sinon.stub().yields null
     @sut.start {}, done
