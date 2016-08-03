@@ -2,7 +2,7 @@ _               = require 'lodash'
 spawn           = require 'cross-spawn'
 path            = require 'path'
 
-WINDOWS_RECEIVER_PATH = path.join 'C', 'Program Files (x86)', 'Citrix', 'ICA Client', 'SelfServicePlugin', 'SelfService.exe'
+WINDOWS_RECEIVER_PATH = path.join 'C:', 'Program Files (x86)', 'Citrix', 'ICA Client', 'SelfServicePlugin', 'SelfService.exe'
 MAC_RECEIVER_PATH = '/Applications/Citrix Receiver.app'
 
 class ReceiverManager
