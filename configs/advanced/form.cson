@@ -1,3 +1,6 @@
 angular: [
   { key: "options.receiverPath" }
+  { key: "options.display" }
+  { key: "options.homeDirectory" }
+  { key: "options.linuxUser" }
 ]

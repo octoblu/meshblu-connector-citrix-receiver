@@ -1,1 +1,4 @@
-angular: [ ]
+angular: [
+  { key: "options.homeDirectory" }
+  { key: "options.linuxUser" }
+]

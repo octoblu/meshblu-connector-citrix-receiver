@@ -8,7 +8,23 @@ properties:
       receiverPath:
         title: "Custom Receiver Path"
         type: "string"
-        default: ""
+      display:
+        title: "Custom DISPLAY variable"
+        description: 'Only used in Linux'
+        type: "string"
+        default: ":0"
+      storeUrl:
+        title: "Store URL"
+        description: 'Will attempt to autodiscover if left blank'
+        type: "string"
+      linuxUser:
+        title: "Linux username"
+        description: 'Only used in Linux'
+        type: "string"
+      homeDirectory:
+        title: "User home directory"
+        description: 'Only used in Linux'
+        type: "string"
     required: [
       "receiverPath"
     ]

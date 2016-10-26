@@ -4,4 +4,12 @@ properties:
   options:
     title: "Options"
     type: "object"
-    properties: {}
+    properties:
+      linuxUser:
+        title: "Linux username"
+        description: 'Only used in Linux'
+        type: "string"
+      homeDirectory:
+        title: "User home directory"
+        description: 'Only used in Linux'
+        type: "string"

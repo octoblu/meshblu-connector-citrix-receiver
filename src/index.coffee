@@ -26,8 +26,9 @@ class Connector extends EventEmitter
   onConfig: (device={}, callback=->) =>
     { @options } = device
     debug 'on config', @options
-    { receiverPath } = @options ? {}
-    @receiver.connect { receiverPath }, callback
+    { receiverPath, display, linuxUser, homeDirectory, storeUrl } = @options ? {}
+
+    @receiver.connect { receiverPath, display, linuxUser, homeDirectory, storeUrl }, callback
 
   poll: (callback) =>
     @receiver.poll callback

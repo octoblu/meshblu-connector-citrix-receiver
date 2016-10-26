@@ -29,3 +29,6 @@ deploy
 meshblu.json
 schemas.json
 .nyc_output
+service.json
+update.json
+start

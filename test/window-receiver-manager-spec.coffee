@@ -1,19 +1,22 @@
+{beforeEach, describe, it} = global
+{expect} = require 'chai'
 {EventEmitter} = require 'events'
-ReceiverManager = require '../src/receiver-manager'
+sinon = require 'sinon'
+WindowsReceiverManager = require '../src/receiver-managers/windows-receiver-manager'
 
-describe 'ReceiverManager', ->
+describe 'WindowsReceiverManager', ->
   beforeEach (done) ->
     logger =
       info: =>
       debug: =>
       warn: =>
 
-    @sut = new ReceiverManager {logger}
+    @sut = new WindowsReceiverManager {logger}
     @sut.IS_WINDOWS = true
     @proc = new EventEmitter
     @proc.stdout = new EventEmitter
     @proc.stderr = new EventEmitter
-    @sut.spawn = sinon.spy (command, args) =>
+    @sut.spawn = sinon.spy =>
       setTimeout (=> @proc.emit 'close'), 10
       @proc
     {@spawn} = @sut

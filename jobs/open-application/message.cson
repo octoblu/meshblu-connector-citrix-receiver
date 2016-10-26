@@ -1,4 +1,4 @@
-title: 'Open Application (Windows Only)'
+title: 'Open Application (not available on MacOS)'
 type: 'object'
 properties:
   data:

@@ -1,5 +1,3 @@
-http = require 'http'
-
 class DisconnectApps
   constructor: ({@connector}) ->
     throw new Error 'DisconnectApps requires connector' unless @connector?

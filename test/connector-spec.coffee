@@ -1,3 +1,7 @@
+{afterEach, beforeEach, describe, it} = global
+{expect} = require 'chai'
+sinon = require 'sinon'
+
 Connector = require '../'
 
 describe 'Connector', ->
@@ -26,10 +30,19 @@ describe 'Connector', ->
     beforeEach (done) ->
       options =
         receiverPath: 'hello'
+        linuxUser: 'kung-foo'
+        homeDirectory: '/home/kung-foo'
+        display: ':1'
+        storeUrl: 'https://go.gone.biz'
       @sut.onConfig {options}, done
 
     it 'should call receiver.connect', ->
-      expect(@receiver.connect).to.have.been.calledWith receiverPath: 'hello'
+      expect(@receiver.connect).to.have.been.calledWith
+        receiverPath: 'hello'
+        linuxUser: 'kung-foo'
+        homeDirectory: '/home/kung-foo'
+        display: ':1'
+        storeUrl: 'https://go.gone.biz'
 
   describe '->openApplication', ->
     beforeEach (done) ->
