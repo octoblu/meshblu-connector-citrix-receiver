@@ -32,3 +32,4 @@ schemas.json
 service.json
 update.json
 start
+.wercker
